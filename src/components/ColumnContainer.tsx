@@ -16,16 +16,15 @@ function ColumnContainer({ id, items, children }: Props) {
   });
 
   return (
-    <div
-      ref={setNodeRef}
-      className="bg-gray-100 w-[308px] min-w-[308px] px-6 flex-1"
-    >
-      {/* <div className="h-[60px] flex items-center justify-between">
-        <div className="flex gap-2">{id}</div>
-      </div> */}
-      {/* <div className="h-full"> */}
-      {children}
-      {/* </div> */}
+    <div className="bg-gray-100 w-[308px] min-w-[308px] px-6 py-2 flex-1">
+      <div className="mb-4">
+        <div>{id}</div>
+      </div>
+      <div ref={setNodeRef} className="flex flex-col gap-4">
+        {/* <div className="h-full"> */}
+        {children}
+        {/* </div> */}
+      </div>
     </div>
   );
 }

@@ -139,8 +139,6 @@ type Items = { [key: UniqueIdentifier]: UniqueIdentifier[] };
 
 export const TRASH_ID = "void";
 
-const PLACEHOLDER_ID = "placeholder";
-
 function KanbanBoard() {
   // const [columns, setColumns] = useState<Column[]>(defaultCols);
 
@@ -188,7 +186,7 @@ function KanbanBoard() {
   }
 
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row divide-x divide-black">
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
@@ -338,24 +336,27 @@ function KanbanBoard() {
         // onDragCancel={onDragCancel}
       >
         {containers.map((containerId) => (
-          <SortableContext
+          <ColumnContainer
+            key={containerId}
+            id={containerId}
             items={items[containerId]}
-            strategy={verticalListSortingStrategy}
           >
-            <ColumnContainer
-              key={containerId}
-              id={containerId}
+            <SortableContext
               items={items[containerId]}
+              strategy={verticalListSortingStrategy}
             >
               {items[containerId].map((value) => {
                 return <TaskCard key={value} id={value} />;
               })}
-            </ColumnContainer>
-          </SortableContext>
+            </SortableContext>
+          </ColumnContainer>
         ))}
-        <DragOverlay>
-          {activeId ? <TaskCard id={activeId} /> : null}
-        </DragOverlay>
+        {createPortal(
+          <DragOverlay>
+            {activeId ? <TaskCard id={activeId} /> : null}
+          </DragOverlay>,
+          document.body
+        )}
       </DndContext>
     </div>
   );
