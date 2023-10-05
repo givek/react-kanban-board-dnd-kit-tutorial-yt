@@ -28,17 +28,17 @@ function TaskCard({ id }: Props) {
     : "";
 
   return (
-    <li
+    <div
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
       className={`p-2 bg-white h-[100px] min-h-[100px] items-center flex hover:ring-2 hover:ring-inset hover:ring-rose-200 cursor-grab relative ${draggingActiveClasses}`}
     >
-      <div>
-        <p className="my-auto w-full">{id}</p>
-      </div>
-    </li>
+      {/* <div> */}
+      <p className="my-auto w-full">{id}</p>
+      {/* </div> */}
+    </div>
   );
 }
 

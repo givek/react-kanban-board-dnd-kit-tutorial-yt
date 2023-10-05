@@ -188,7 +188,7 @@ function KanbanBoard() {
   }
 
   return (
-    <div className="h-screen overflow-y-hidden">
+    <div className="flex flex-row">
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
@@ -202,6 +202,8 @@ function KanbanBoard() {
           setClonedItems(items);
         }}
         onDragOver={({ active, over }) => {
+          console.log("onDragOver", active, over);
+
           const overId = over?.id;
 
           if (overId == null || overId === TRASH_ID || active.id in items) {
@@ -225,8 +227,12 @@ function KanbanBoard() {
               let newIndex: number;
 
               if (overId in items) {
+                console.log("Over-In-Items");
+
                 newIndex = overItems.length + 1;
               } else {
+                console.log("Over-In-Else");
+
                 const isBelowOverItem =
                   over &&
                   active.rect.current.translated &&
@@ -257,14 +263,14 @@ function KanbanBoard() {
           }
         }}
         onDragEnd={({ active, over }) => {
-          if (active.id in items && over?.id) {
-            setContainers((containers) => {
-              const activeIndex = containers.indexOf(active.id);
-              const overIndex = containers.indexOf(over.id);
+          // if (active.id in items && over?.id) {
+          //   setContainers((containers) => {
+          //     const activeIndex = containers.indexOf(active.id);
+          //     const overIndex = containers.indexOf(over.id);
 
-              return arrayMove(containers, activeIndex, overIndex);
-            });
-          }
+          //     return arrayMove(containers, activeIndex, overIndex);
+          //   });
+          // }
 
           const activeContainer = findContainer(active.id);
 
@@ -280,33 +286,33 @@ function KanbanBoard() {
             return;
           }
 
-          if (overId === TRASH_ID) {
-            setItems((items) => ({
-              ...items,
-              [activeContainer]: items[activeContainer].filter(
-                (id) => id !== activeId
-              ),
-            }));
-            setActiveId(null);
-            return;
-          }
+          // if (overId === TRASH_ID) {
+          //   setItems((items) => ({
+          //     ...items,
+          //     [activeContainer]: items[activeContainer].filter(
+          //       (id) => id !== activeId
+          //     ),
+          //   }));
+          //   setActiveId(null);
+          //   return;
+          // }
 
-          if (overId === PLACEHOLDER_ID) {
-            const newContainerId = getNextContainerId();
+          // if (overId === PLACEHOLDER_ID) {
+          //   const newContainerId = getNextContainerId();
 
-            unstable_batchedUpdates(() => {
-              setContainers((containers) => [...containers, newContainerId]);
-              setItems((items) => ({
-                ...items,
-                [activeContainer]: items[activeContainer].filter(
-                  (id) => id !== activeId
-                ),
-                [newContainerId]: [active.id],
-              }));
-              setActiveId(null);
-            });
-            return;
-          }
+          //   unstable_batchedUpdates(() => {
+          //     setContainers((containers) => [...containers, newContainerId]);
+          //     setItems((items) => ({
+          //       ...items,
+          //       [activeContainer]: items[activeContainer].filter(
+          //         (id) => id !== activeId
+          //       ),
+          //       [newContainerId]: [active.id],
+          //     }));
+          //     setActiveId(null);
+          //   });
+          //   return;
+          // }
 
           const overContainer = findContainer(overId);
 
@@ -331,30 +337,25 @@ function KanbanBoard() {
         // cancelDrop={cancelDrop}
         // onDragCancel={onDragCancel}
       >
-        <div className="flex gap-2 h-full">
-          {containers.map((containerId) => (
+        {containers.map((containerId) => (
+          <SortableContext
+            items={items[containerId]}
+            strategy={verticalListSortingStrategy}
+          >
             <ColumnContainer
               key={containerId}
               id={containerId}
               items={items[containerId]}
             >
-              <SortableContext
-                items={items[containerId]}
-                strategy={verticalListSortingStrategy}
-              >
-                {items[containerId].map((value) => {
-                  return <TaskCard key={value} id={value} />;
-                })}
-              </SortableContext>
+              {items[containerId].map((value) => {
+                return <TaskCard key={value} id={value} />;
+              })}
             </ColumnContainer>
-          ))}
-        </div>
-        {createPortal(
-          <DragOverlay adjustScale={false}>
-            {activeId ? <TaskCard id={activeId} /> : null}
-          </DragOverlay>,
-          document.body
-        )}
+          </SortableContext>
+        ))}
+        <DragOverlay>
+          {activeId ? <TaskCard id={activeId} /> : null}
+        </DragOverlay>
       </DndContext>
     </div>
   );

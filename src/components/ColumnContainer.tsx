@@ -18,14 +18,14 @@ function ColumnContainer({ id, items, children }: Props) {
   return (
     <div
       ref={setNodeRef}
-      className="bg-gray-100 w-[308px] min-w-[308px] px-2 overflow-y-auto"
+      className="bg-gray-100 w-[308px] min-w-[308px] px-6 flex-1"
     >
-      <div className="h-[60px] flex items-center justify-between">
+      {/* <div className="h-[60px] flex items-center justify-between">
         <div className="flex gap-2">{id}</div>
-      </div>
-      <div>
-        <ul className="flex flex-col gap-2">{children}</ul>
-      </div>
+      </div> */}
+      {/* <div className="h-full"> */}
+      {children}
+      {/* </div> */}
     </div>
   );
 }
